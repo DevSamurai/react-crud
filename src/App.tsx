@@ -1,9 +1,11 @@
-import { Button } from "@mui/material"
+import { BrowserRouter } from "react-router-dom"
+
+import { AppRoutes } from "./routes"
 
 export default function App() {
   return (
-    <div>
-      <Button variant="contained">Hello World</Button>
-    </div>
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
   )
 }

@@ -60,7 +60,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container maxWidth="sm">
+      <Container maxWidth="lg">
         <Box sx={{ my: 4 }}>
           <App />
         </Box>
@@ -111,3 +111,23 @@ export default function App() {
 E pronto! Já temos algo minimamente funcional:
 
 ![Hello World](./docs/hello-world.png)
+
+## Passo 2: Estrutura de base do CRUD
+
+DataTable
+
+```sh
+npm install @mui/x-data-grid
+```
+
+Form validation
+
+```sh
+npm install react-hook-form @hookform/resolvers yup
+```
+
+## Referências
+
+Alguns links e referências que podem te ajudar:
+
+- <https://levelup.gitconnected.com/reareact-hook-form-with-mui-examples-a3080b71ec45>
