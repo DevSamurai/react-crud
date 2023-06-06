@@ -14,6 +14,7 @@ import {
 } from "@mui/material"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+import { Link as RouterLink } from "react-router-dom"
 import * as yup from "yup"
 
 import Breadcrumbs from "../../../components/Breadcrumbs"
@@ -59,6 +60,7 @@ export default function Create() {
   })
 
   const [addressLoaded, setAddressLoaded] = useState(false)
+  const [zipCodeFounded, setZipCodeFounded] = useState(true)
   const [address, setAddress] = useState({
     addressName: "",
     number: "",
@@ -74,12 +76,15 @@ export default function Create() {
   const onZipCodeBlur = async (event: React.FocusEvent<HTMLInputElement>) => {
     const { value } = event.target
 
+    setZipCodeFounded(true)
+
     if (!value) return
 
     const address = await findBrazilianZipCode(value)
 
     if (!address) {
       setAddressLoaded(true)
+      setZipCodeFounded(false)
       setFocus("addressName")
       return
     }
@@ -145,12 +150,15 @@ export default function Create() {
 
           <FormTitle title="Endereço" />
 
-          <Stack sx={{ marginBottom: 2, width: 120 }}>
+          <Stack sx={{ marginBottom: 2, width: 200 }}>
             <TextField
               fullWidth={false}
               label="CEP"
               error={!!errors.zipCode}
-              helperText={errors.zipCode?.message}
+              helperText={
+                errors.zipCode?.message ||
+                (!zipCodeFounded && "Não encontrado, preencha.")
+              }
               {...register("zipCode")}
               onBlur={onZipCodeBlur}
             />
@@ -262,28 +270,31 @@ export default function Create() {
             )}
           />
 
+          <Controller
+            control={control}
+            name="emailVerified"
+            defaultValue={false}
+            render={({ field: { onChange, value, ...field } }) => (
+              <FormControlLabel
+                control={
+                  <Switch onChange={onChange} checked={value} {...field} />
+                }
+                label="Email Pré-verificado"
+                sx={{ marginBottom: 2 }}
+              />
+            )}
+          />
+
           <Stack
             direction={{ xs: "column", sm: "row" }}
             sx={{ marginBottom: 2 }}
             spacing={2}
           >
-            <Controller
-              control={control}
-              name="emailVerified"
-              defaultValue={false}
-              render={({ field: { onChange, value, ...field } }) => (
-                <FormControlLabel
-                  control={
-                    <Switch onChange={onChange} checked={value} {...field} />
-                  }
-                  label="Email Pré-verificado"
-                  sx={{ flexGrow: 1 }}
-                />
-              )}
-            />
-
             <Button type="submit" variant="contained" size="large">
               Criar Usuário
+            </Button>
+            <Button component={RouterLink} to="/users">
+              Cancelar
             </Button>
           </Stack>
         </Box>
