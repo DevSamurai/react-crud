@@ -126,6 +126,13 @@ Form validation
 npm install react-hook-form @hookform/resolvers yup
 ```
 
+Máscara de campos
+
+```sh
+npm install react-input-mask@3.0.0-alpha.2
+npm install -D @types/react-input-mask
+```
+
 ## Referências
 
 Alguns links e referências que podem te ajudar:

@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup"
+import InfoIcon from "@mui/icons-material/Info"
 import {
   Box,
   Button,
@@ -11,9 +12,11 @@ import {
   Stack,
   Switch,
   TextField,
+  Tooltip,
 } from "@mui/material"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+import InputMask from "react-input-mask"
 import { Link as RouterLink } from "react-router-dom"
 import * as yup from "yup"
 
@@ -31,8 +34,16 @@ const schema = yup
       .email("E-mail não reconhecido")
       .required("Este campo é obrigatório"),
     emailVerified: yup.boolean().default(false),
-    mobile: yup.string().required("Este campo é obrigatório"),
-    zipCode: yup.string().required("Este campo é obrigatório"),
+    mobile: yup
+      .string()
+      .required("Este campo é obrigatório")
+      .transform((value) =>
+        value ? `+55${value.replace(/[^\d]+/g, "")}` : value
+      ),
+    zipCode: yup
+      .string()
+      .required("Este campo é obrigatório")
+      .transform((value) => value.replace(/[^\d]+/g, "")),
     addressName: yup.string().required("Este campo é obrigatório"),
     number: yup.string().required("Este campo é obrigatório"),
     complement: yup.string(),
@@ -59,21 +70,12 @@ export default function Create() {
     resolver: yupResolver(schema),
   })
 
-  const [addressLoaded, setAddressLoaded] = useState(false)
   const [zipCodeFounded, setZipCodeFounded] = useState(true)
-  const [address, setAddress] = useState({
-    addressName: "",
-    number: "",
-    complement: "",
-    neighborhood: "",
-    city: "",
-    state: "",
-    zipCode: "",
-  } as FormData)
 
   const onSubmit = (data: FormData) => console.log(data)
-
-  const onZipCodeBlur = async (event: React.FocusEvent<HTMLInputElement>) => {
+  const onZipCodeBlur = async (
+    event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
+  ) => {
     const { value } = event.target
 
     setZipCodeFounded(true)
@@ -82,17 +84,21 @@ export default function Create() {
 
     const address = await findBrazilianZipCode(value)
 
-    if (!address) {
-      setAddressLoaded(true)
+    if (!address || !address?.addressName) {
       setZipCodeFounded(false)
+
+      setValue("addressName", "")
+      setValue("neighborhood", "")
+      setValue("city", "")
+      setValue("state", "")
+
       setFocus("addressName")
+
       return
     }
 
-    // set the values on the state
-    setAddress(address as FormData)
+    setZipCodeFounded(true)
 
-    // set the values on the form
     setValue("addressName", address.addressName)
     setValue("neighborhood", address.neighborhood)
     setValue("city", address.city)
@@ -117,19 +123,19 @@ export default function Create() {
           onSubmit={handleSubmit(onSubmit)}
           sx={{ p: 2 }}
         >
-          <Stack sx={{ marginBottom: 2 }}>
-            <TextField
-              label="Nome Completo"
-              error={!!errors.fullName}
-              helperText={errors.fullName?.message}
-              {...register("fullName")}
-            />
-          </Stack>
+          <TextField
+            label="Nome Completo"
+            fullWidth={true}
+            error={!!errors.fullName}
+            helperText={errors.fullName?.message}
+            sx={{ marginBottom: 2 }}
+            {...register("fullName")}
+          />
 
           <Stack
             direction={{ xs: "column", sm: "row" }}
-            sx={{ marginBottom: 2 }}
             spacing={2}
+            sx={{ marginBottom: 2 }}
           >
             <TextField
               label="E-mail"
@@ -139,41 +145,75 @@ export default function Create() {
               {...register("email")}
             />
 
-            <TextField
-              label="Celular"
-              fullWidth={true}
-              error={!!errors.mobile}
-              helperText={errors.mobile?.message}
-              {...register("mobile")}
+            <Controller
+              control={control}
+              name="mobile"
+              defaultValue=""
+              render={({ field: { ...field } }) => (
+                <FormControl fullWidth={true}>
+                  <InputMask mask="(99) 99999-9999" {...field}>
+                    <TextField
+                      label="Celular"
+                      fullWidth={true}
+                      error={!!errors.mobile}
+                      helperText={errors.mobile?.message}
+                    />
+                  </InputMask>
+                </FormControl>
+              )}
             />
           </Stack>
 
           <FormTitle title="Endereço" />
 
-          <Stack sx={{ marginBottom: 2, width: 200 }}>
-            <TextField
-              fullWidth={false}
-              label="CEP"
-              error={!!errors.zipCode}
-              helperText={
-                errors.zipCode?.message ||
-                (!zipCodeFounded && "Não encontrado, preencha.")
-              }
-              {...register("zipCode")}
-              onBlur={onZipCodeBlur}
+          <Stack sx={{ marginBottom: 2, width: 220 }}>
+            <Controller
+              control={control}
+              name="zipCode"
+              defaultValue=""
+              render={({ field: { ...field } }) => (
+                <FormControl fullWidth={true}>
+                  <InputMask
+                    mask="99999-999"
+                    ref={field.ref}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={(e) => {
+                      field.onBlur()
+                      onZipCodeBlur(e)
+                    }}
+                  >
+                    <TextField
+                      label="CEP"
+                      fullWidth={true}
+                      error={!!errors.zipCode}
+                      helperText={
+                        errors.zipCode?.message ||
+                        (!zipCodeFounded && "Não encontrado, favor preencher.")
+                      }
+                    />
+                  </InputMask>
+                </FormControl>
+              )}
             />
           </Stack>
 
-          <Stack sx={{ marginBottom: 2 }}>
-            <TextField
-              label="Endereço"
-              error={!!errors.addressName}
-              helperText={errors.addressName?.message}
-              disabled={!addressLoaded}
-              value={address.addressName}
-              {...register("addressName")}
-            />
-          </Stack>
+          <Controller
+            control={control}
+            name="addressName"
+            defaultValue=""
+            render={({ field: { ...field } }) => (
+              <FormControl fullWidth={true} sx={{ marginBottom: 2 }}>
+                <TextField
+                  label="Endereço"
+                  error={!!errors.addressName}
+                  helperText={errors.addressName?.message}
+                  disabled={!!zipCodeFounded}
+                  {...field}
+                />
+              </FormControl>
+            )}
+          />
 
           <Stack
             direction={{ xs: "column", sm: "row" }}
@@ -201,23 +241,40 @@ export default function Create() {
             sx={{ marginBottom: 2 }}
             spacing={2}
           >
-            <TextField
-              label="Bairro"
-              fullWidth={true}
-              error={!!errors.neighborhood}
-              helperText={errors.neighborhood?.message}
-              disabled={!addressLoaded}
-              value={address.neighborhood}
-              {...register("neighborhood")}
+            <Controller
+              control={control}
+              name="neighborhood"
+              defaultValue=""
+              render={({ field: { ...field } }) => (
+                <FormControl fullWidth={true}>
+                  <TextField
+                    label="Bairro"
+                    fullWidth={true}
+                    error={!!errors.neighborhood}
+                    helperText={errors.neighborhood?.message}
+                    disabled={!!zipCodeFounded}
+                    {...field}
+                  />
+                </FormControl>
+              )}
             />
-            <TextField
-              label="Cidade"
-              fullWidth={true}
-              error={!!errors.city}
-              helperText={errors.city?.message}
-              disabled={!addressLoaded}
-              value={address.city}
-              {...register("city")}
+
+            <Controller
+              control={control}
+              name="city"
+              defaultValue=""
+              render={({ field: { ...field } }) => (
+                <FormControl fullWidth={true}>
+                  <TextField
+                    label="Cidade"
+                    fullWidth={true}
+                    error={!!errors.city}
+                    helperText={errors.city?.message}
+                    disabled={!!zipCodeFounded}
+                    {...field}
+                  />
+                </FormControl>
+              )}
             />
           </Stack>
 
@@ -229,15 +286,16 @@ export default function Create() {
               <FormControl fullWidth={true} sx={{ marginBottom: 2 }}>
                 <InputLabel id="state">Estado</InputLabel>
                 <Select
-                  labelId="state"
                   label="Estado"
+                  labelId="state"
                   ref={field.ref}
                   name={field.name}
-                  value={address.state || field.value}
+                  value={field.value}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
-                  disabled={!addressLoaded}
+                  disabled={!!zipCodeFounded}
                 >
+                  <MenuItem value={""}></MenuItem>
                   <MenuItem value={"AC"}>Acre</MenuItem>
                   <MenuItem value={"AL"}>Alagoas</MenuItem>
                   <MenuItem value={"AP"}>Amapá</MenuItem>
@@ -275,21 +333,22 @@ export default function Create() {
             name="emailVerified"
             defaultValue={false}
             render={({ field: { onChange, value, ...field } }) => (
-              <FormControlLabel
-                control={
-                  <Switch onChange={onChange} checked={value} {...field} />
-                }
-                label="Email Pré-verificado"
-                sx={{ marginBottom: 2 }}
-              />
+              <>
+                <FormControlLabel
+                  control={
+                    <Switch checked={value} onChange={onChange} {...field} />
+                  }
+                  label="Email Pré-verificado"
+                  sx={{ marginBottom: 2 }}
+                />
+                <Tooltip title="Cadastrar o usuário sem precisar confirmar seu e-mail.">
+                  <InfoIcon color="disabled" />
+                </Tooltip>
+              </>
             )}
           />
 
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            sx={{ marginBottom: 2 }}
-            spacing={2}
-          >
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <Button type="submit" variant="contained" size="large">
               Criar Usuário
             </Button>
