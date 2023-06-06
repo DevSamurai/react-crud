@@ -159,6 +159,24 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 )
 ```
 
+E os respectivos locales em [`src/theme.ts`](./src/theme.ts):
+
+```ts
+import { ptBR as MaterialLocale } from "@mui/material/locale"
+import { createTheme } from "@mui/material/styles"
+import { ptBR as DataGridLocale } from "@mui/x-data-grid"
+
+export const theme = createTheme(
+  {
+    palette: {
+      mode: "dark",
+    },
+  },
+  DataGridLocale,
+  MaterialLocale
+)
+```
+
 Form validation
 
 ```sh
@@ -176,4 +194,5 @@ npm install -D @types/react-input-mask
 
 Alguns links e referências que podem te ajudar:
 
-- <https://levelup.gitconnected.com/reareact-hook-form-with-mui-examples-a3080b71ec45>
+- [Template de Dashboard Profissional](https://minimals.cc/dashboard)
+- [Material UI + React Hook Form](https://levelup.gitconnected.com/reareact-hook-form-with-mui-examples-a3080b71ec45)
