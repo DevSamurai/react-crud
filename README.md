@@ -190,6 +190,12 @@ npm install react-input-mask@3.0.0-alpha.2
 npm install -D @types/react-input-mask
 ```
 
+useLocalStorage
+
+```sh
+npm install usehooks-ts
+```
+
 ## Referências
 
 Alguns links e referências que podem te ajudar:

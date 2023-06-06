@@ -1,7 +1,9 @@
 import * as yup from "yup"
 
-export const schema = yup
-  .object({
+import { User } from "../types/User"
+
+export const UserSchema = yup
+  .object<User>({
     fullName: yup.string().required("Este campo é obrigatório"),
     document: yup.string().required("Este campo é obrigatório"),
     birthDate: yup.date(),
@@ -28,5 +30,3 @@ export const schema = yup
     state: yup.string().required("Este campo é obrigatório"),
   })
   .required()
-
-export type FormData = yup.InferType<typeof schema>

@@ -19,14 +19,19 @@ import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import InputMask from "react-input-mask"
 import { Link as RouterLink } from "react-router-dom"
+import { useLocalStorage } from "usehooks-ts"
 
 import FormTitle from "../../components/FormTitle"
 
 import { findBrazilianZipCode } from "../../services/api"
 
-import { FormData, schema } from "./validationSchema"
+import { UserSchema } from "./schemas/UserSchema"
+
+import { User } from "./types/User"
 
 export default function Form() {
+  const [users, setUsers] = useLocalStorage<User[]>("users", [])
+
   const {
     control,
     register,
@@ -34,13 +39,17 @@ export default function Form() {
     formState: { errors },
     setFocus,
     setValue,
-  } = useForm<FormData>({
-    resolver: yupResolver(schema),
+  } = useForm<User>({
+    resolver: yupResolver(UserSchema),
   })
 
   const [zipCodeFounded, setZipCodeFounded] = useState<boolean>()
 
-  const onSubmit = (data: FormData) => console.log(data)
+  const onSubmit = (data: User) => {
+    console.log(data)
+    setUsers([...users, { ...data, id: `${users.length + 1}` }])
+  }
+
   const onZipCodeBlur = async (
     event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {

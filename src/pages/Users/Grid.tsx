@@ -7,10 +7,15 @@ import {
   GridRenderCellParams,
   GridValueGetterParams,
 } from "@mui/x-data-grid"
+import { useLocalStorage } from "usehooks-ts"
 
 import DataTable from "../../components/DataTable"
 
-export default function List() {
+import { User } from "./types/User"
+
+export default function Grid() {
+  const [users] = useLocalStorage<User[]>("users", [])
+
   const onCall = (params: GridRenderCellParams) => {
     const currentRow = params.row
     return console.log(JSON.stringify(currentRow, null, 4))
@@ -26,7 +31,7 @@ export default function List() {
     return console.log(JSON.stringify(currentRow, null, 4))
   }
 
-  const columns: GridColDef[] = [
+  const columns: GridColDef<User>[] = [
     { field: "id", headerName: "ID", width: 70 },
     {
       field: "firstName",
@@ -47,7 +52,10 @@ export default function List() {
       type: "number",
       valueGetter: (params: GridValueGetterParams) =>
         params.row.birthDate &&
-        `${new Date().getFullYear() - params.row.birthDate.getFullYear()}`,
+        `${
+          new Date().getFullYear() -
+          new Date(params.row.birthDate).getFullYear()
+        }`,
     },
     { field: "email", headerName: "E-mail", minWidth: 200 },
     { field: "mobile", headerName: "Celular", minWidth: 180 },
@@ -83,17 +91,5 @@ export default function List() {
     },
   ]
 
-  const rows = [
-    {
-      id: 1,
-      fullName: "Felipe Fontoura",
-      document: "99988811100",
-      birthDate: new Date(1982, 2, 18),
-      email: "someemail@gmail.com",
-      mobile: "+5512982049999",
-      status: "ACTIVE",
-    },
-  ]
-
-  return <DataTable columns={columns} rows={rows} />
+  return <DataTable columns={columns} rows={users as User[]} />
 }
