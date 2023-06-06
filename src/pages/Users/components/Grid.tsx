@@ -7,23 +7,25 @@ import {
   GridRenderCellParams,
   GridValueGetterParams,
 } from "@mui/x-data-grid"
+import { useNavigate } from "react-router-dom"
 import { useLocalStorage } from "usehooks-ts"
 
-import DataTable from "../../components/DataTable"
+import DataTable from "../../../components/DataTable"
 
-import { User } from "./types/User"
+import { User } from "../types/User"
 
 export default function Grid() {
   const [users] = useLocalStorage<User[]>("users", [])
+  const navigate = useNavigate()
 
   const onCall = (params: GridRenderCellParams) => {
-    const currentRow = params.row
-    return console.log(JSON.stringify(currentRow, null, 4))
+    if (!params.row.mobile) return
+    window.location.href = `https://wa.me/${params.row.mobile}`
   }
 
   const onEdit = (params: GridRenderCellParams) => {
-    const currentRow = params.row
-    return console.log(JSON.stringify(currentRow, null, 4))
+    if (!params.row.id) return
+    navigate(`/users/${params.row.id}`)
   }
 
   const onDelete = (params: GridRenderCellParams) => {
@@ -59,7 +61,6 @@ export default function Grid() {
     },
     { field: "email", headerName: "E-mail", minWidth: 200 },
     { field: "mobile", headerName: "Celular", minWidth: 180 },
-    { field: "role", headerName: "Perfil", minWidth: 80 },
     {
       field: "actions",
       headerName: "Ações",

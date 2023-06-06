@@ -18,17 +18,16 @@ import { DatePicker } from "@mui/x-date-pickers"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import InputMask from "react-input-mask"
-import { useNavigate } from "react-router"
-import { Link as RouterLink } from "react-router-dom"
+import { Link as RouterLink, useNavigate } from "react-router-dom"
 import { useLocalStorage } from "usehooks-ts"
 
-import FormTitle from "../../components/FormTitle"
+import FormTitle from "../../../components/FormTitle"
 
-import { findBrazilianZipCode } from "../../services/api"
+import { findBrazilianZipCode } from "../../../services/api"
 
-import { UserSchema } from "./schemas/UserSchema"
+import { UserSchema } from "../schemas/UserSchema"
 
-import { User } from "./types/User"
+import { User } from "../types/User"
 
 export default function Form() {
   const [users, setUsers] = useLocalStorage<User[]>("users", [])

@@ -2,10 +2,10 @@ import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt"
 import { Box, Button, Paper, Stack } from "@mui/material"
 import { Link as RouterLink } from "react-router-dom"
 
-import Breadcrumbs from "../../../components/Breadcrumbs"
-import PageTitle from "../../../components/PageTitle"
+import Breadcrumbs from "../../components/Breadcrumbs"
+import PageTitle from "../../components/PageTitle"
 
-import Grid from "../Grid"
+import Grid from "./components/Grid"
 
 export default function List() {
   return (
