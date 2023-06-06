@@ -78,8 +78,6 @@ export default function Create() {
   ) => {
     const { value } = event.target
 
-    setZipCodeFounded(true)
-
     if (!value) return
 
     const address = await findBrazilianZipCode(value)
