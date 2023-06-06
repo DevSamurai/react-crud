@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import InfoIcon from "@mui/icons-material/Info"
 import {
   Box,
@@ -70,7 +71,7 @@ export default function Create() {
     resolver: yupResolver(schema),
   })
 
-  const [zipCodeFounded, setZipCodeFounded] = useState(true)
+  const [zipCodeFounded, setZipCodeFounded] = useState<boolean>()
 
   const onSubmit = (data: FormData) => console.log(data)
   const onZipCodeBlur = async (
@@ -164,21 +165,26 @@ export default function Create() {
 
           <FormTitle title="Endereço" />
 
-          <Stack sx={{ marginBottom: 2, width: 220 }}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
+            sx={{ marginBottom: 2, width: 250 }}
+          >
             <Controller
               control={control}
               name="zipCode"
               defaultValue=""
               render={({ field: { ...field } }) => (
-                <FormControl fullWidth={true}>
+                <FormControl fullWidth={true} sx={{ width: 220 }}>
                   <InputMask
                     mask="99999-999"
                     ref={field.ref}
                     value={field.value}
                     onChange={field.onChange}
                     onBlur={(e) => {
-                      field.onBlur()
                       onZipCodeBlur(e)
+                      field.onBlur()
                     }}
                   >
                     <TextField
@@ -187,13 +193,15 @@ export default function Create() {
                       error={!!errors.zipCode}
                       helperText={
                         errors.zipCode?.message ||
-                        (!zipCodeFounded && "Não encontrado, favor preencher.")
+                        (zipCodeFounded === false &&
+                          "Não encontrado, favor preencher.")
                       }
                     />
                   </InputMask>
                 </FormControl>
               )}
             />
+            {zipCodeFounded === true && <CheckCircleIcon color="success" />}
           </Stack>
 
           <Controller
