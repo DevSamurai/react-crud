@@ -18,6 +18,7 @@ import { DatePicker } from "@mui/x-date-pickers"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import InputMask from "react-input-mask"
+import { useNavigate } from "react-router"
 import { Link as RouterLink } from "react-router-dom"
 import { useLocalStorage } from "usehooks-ts"
 
@@ -31,6 +32,7 @@ import { User } from "./types/User"
 
 export default function Form() {
   const [users, setUsers] = useLocalStorage<User[]>("users", [])
+  const navigate = useNavigate()
 
   const {
     control,
@@ -48,6 +50,7 @@ export default function Form() {
   const onSubmit = (data: User) => {
     console.log(data)
     setUsers([...users, { ...data, id: `${users.length + 1}` }])
+    navigate("/users/")
   }
 
   const onZipCodeBlur = async (
