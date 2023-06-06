@@ -18,7 +18,6 @@ export default function DataTable({ columns, rows }: DataTableProps) {
         }}
         pageSizeOptions={[10, 15, 25, 50, 100]}
         disableRowSelectionOnClick
-        checkboxSelection
       />
     </div>
   )
