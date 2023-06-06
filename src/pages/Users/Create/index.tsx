@@ -25,11 +25,14 @@ import Breadcrumbs from "../../../components/Breadcrumbs"
 import FormTitle from "../../../components/FormTitle"
 import PageTitle from "../../../components/PageTitle"
 
+import { DatePicker } from "@mui/x-date-pickers"
 import { findBrazilianZipCode } from "../../../services/api"
 
 const schema = yup
   .object({
     fullName: yup.string().required("Este campo é obrigatório"),
+    document: yup.string().required("Este campo é obrigatório"),
+    birthDate: yup.date(),
     email: yup
       .string()
       .email("E-mail não reconhecido")
@@ -130,6 +133,40 @@ export default function Create() {
             sx={{ marginBottom: 2 }}
             {...register("fullName")}
           />
+
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            sx={{ marginBottom: 2 }}
+          >
+            <Controller
+              control={control}
+              name="document"
+              defaultValue=""
+              render={({ field: { ...field } }) => (
+                <FormControl fullWidth={true}>
+                  <InputMask mask="999.999.999-99" {...field}>
+                    <TextField
+                      label="CPF"
+                      fullWidth={true}
+                      error={!!errors.document}
+                      helperText={errors.document?.message}
+                    />
+                  </InputMask>
+                </FormControl>
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="birthDate"
+              render={({ field: { ...field } }) => (
+                <FormControl fullWidth={true}>
+                  <DatePicker label="Data de Nascimento" {...field} />
+                </FormControl>
+              )}
+            />
+          </Stack>
 
           <Stack
             direction={{ xs: "column", sm: "row" }}
