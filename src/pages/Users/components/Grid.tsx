@@ -20,7 +20,11 @@ export default function Grid() {
 
   const onCall = (params: GridRenderCellParams) => {
     if (!params.row.mobile) return
-    window.location.href = `https://wa.me/${params.row.mobile}`
+
+    window.location.href = `https://wa.me/55${params.row.mobile.replace(
+      /[^\d]+/g,
+      ""
+    )}`
   }
 
   const onEdit = (params: GridRenderCellParams) => {

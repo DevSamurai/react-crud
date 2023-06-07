@@ -12,12 +12,7 @@ export const UserSchema = yup
       .email("E-mail não reconhecido")
       .required("Este campo é obrigatório"),
     emailVerified: yup.boolean().default(false),
-    mobile: yup
-      .string()
-      .required("Este campo é obrigatório")
-      .transform((value) =>
-        value ? `+55${value.replace(/[^\d]+/g, "")}` : value
-      ),
+    mobile: yup.string().required("Este campo é obrigatório"),
     zipCode: yup
       .string()
       .required("Este campo é obrigatório")

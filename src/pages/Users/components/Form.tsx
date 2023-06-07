@@ -70,7 +70,16 @@ export default function Form() {
   }, [id, setValue, users])
 
   const onSubmit = (data: User) => {
-    setUsers([...users, { ...data, id: `${users.length + 1}` }])
+    if (!id) {
+      setUsers([...users, { ...data, id: `${users.length + 1}` }])
+    } else {
+      const newUsers = [...users]
+      const userIndex = users.findIndex((user) => user.id === id)
+      newUsers[userIndex] = { ...data, id }
+
+      setUsers(newUsers)
+    }
+
     navigate("/users/")
   }
 
