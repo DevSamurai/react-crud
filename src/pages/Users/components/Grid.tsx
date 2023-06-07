@@ -15,7 +15,7 @@ import DataTable from "../../../components/DataTable"
 import { User } from "../types/User"
 
 export default function Grid() {
-  const [users] = useLocalStorage<User[]>("users", [])
+  const [users, setUsers] = useLocalStorage<User[]>("users", [])
   const navigate = useNavigate()
 
   const onCall = (params: GridRenderCellParams) => {
@@ -29,8 +29,8 @@ export default function Grid() {
   }
 
   const onDelete = (params: GridRenderCellParams) => {
-    const currentRow = params.row
-    return console.log(JSON.stringify(currentRow, null, 4))
+    if (!params.row.id) return
+    setUsers(users.filter((user) => user.id !== params.row.id))
   }
 
   const columns: GridColDef<User>[] = [
