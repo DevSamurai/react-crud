@@ -15,10 +15,10 @@ import {
   Tooltip,
 } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import InputMask from "react-input-mask"
-import { Link as RouterLink, useNavigate } from "react-router-dom"
+import { Link as RouterLink, useNavigate, useParams } from "react-router-dom"
 import { useLocalStorage } from "usehooks-ts"
 
 import FormTitle from "../../../components/FormTitle"
@@ -31,6 +31,7 @@ import { User } from "../types/User"
 
 export default function Form() {
   const [users, setUsers] = useLocalStorage<User[]>("users", [])
+  const { id } = useParams()
   const navigate = useNavigate()
 
   const {
@@ -46,8 +47,29 @@ export default function Form() {
 
   const [zipCodeFounded, setZipCodeFounded] = useState<boolean>()
 
+  useEffect(() => {
+    if (!id) return
+
+    const user = users.find((user) => user.id === id)
+
+    if (!user) return
+
+    setValue("fullName", user.fullName)
+    setValue("document", user.document)
+    setValue("birthDate", new Date(user.birthDate))
+    setValue("email", user.email)
+    setValue("emailVerified", user.emailVerified)
+    setValue("mobile", user.mobile)
+    setValue("zipCode", user.zipCode)
+    setValue("addressName", user.addressName)
+    setValue("number", user.number)
+    setValue("complement", user.complement)
+    setValue("neighborhood", user.neighborhood)
+    setValue("city", user.city)
+    setValue("state", user.state)
+  }, [id, setValue, users])
+
   const onSubmit = (data: User) => {
-    console.log(data)
     setUsers([...users, { ...data, id: `${users.length + 1}` }])
     navigate("/users/")
   }
