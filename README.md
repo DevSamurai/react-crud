@@ -4,7 +4,22 @@ Front-end CRUD completo React para sistemas de administração em geral. Ele foi
 
 ## Como funciona
 
+Este é um exemplo de como criar um CRUD 'completão' que possuí as principais funções, como: listagem, criação, edição e exclusão de dados.
+
+Sem falar na estrutura de pastas e arquivos que é bem organizada e escalável.
+
+O que ideal para apresentar em um portfólio ou para iniciar um projeto.
+
 ## Como executar
+
+Clone, e acesse a pasta do projeto e execute o seguinte comando:
+
+```sh
+git clone git@github.com:DevSamurai/react-crud.git
+cd react-crud
+npm install
+npm run dev
+```
 
 ## Passo a passo
 
